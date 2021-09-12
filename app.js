@@ -81,3 +81,74 @@ saveNoteButton.addEventListener("click", function () {
     addText.value = "";
   }
 });
+
+let noteCount = 0
+
+//function for displaying notes
+const showNotes = () => {
+  const notesDiv = document.getElementById("display-notes");
+  let notesArray = [];
+
+  const allNotes = localStorage.getItem("notes");
+
+  if (allNotes === null) {
+    notesArray = [];
+  } else {
+    notesArray = JSON.parse(allNotes);
+  }
+  if (notesArray.length == 0) {
+    document.getElementById("display-message").innerText =
+      "No notes to display";
+  } else {
+    document.getElementById("display-message").innerText = "Your notes...";
+  }
+  noteCount = 0
+  notesArray.map((element, index) => {
+    noteCount++
+    const newdiv = document.createElement('div')
+    newdiv.innerHTML = `
+
+ <div class="single-card">
+      <div
+        class="col"
+        style="
+          max-height: 250px;
+          overflow: scroll;
+          scroll-behavior: smooth;
+          overflow-x: auto;
+        "
+      >
+        <div class="card text-dark bg-info">
+          <div class="card-body">
+            <h4
+              class="card-title text-center edit-content"
+              onclick="contentEdit(this.id)"
+              onblur="editTitle(${index},this.id)"
+              id="title${index}"
+            >
+              ${element.title}
+            </h4>
+            <hr />
+            <p
+              class="card-text"
+              style="text-align: justify"
+              onclick="contentEdit(this.id)"
+              onblur="editBody(${index},this.id)"
+              id="body${index}"
+            >
+              ${element.body}
+            </p>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center"></div>
+      </div>
+    </div>
+`;
+    notesDiv.appendChild(newdiv)
+  });
+
+  document.getElementById("notes-count").innerText = noteCount;
+
+};
+
+showNotes();
