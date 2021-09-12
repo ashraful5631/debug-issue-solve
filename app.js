@@ -40,5 +40,44 @@ function displayUserInfo(userImg, userName, userEmail) {
 </div>
 `;
 }
+class NoteTemplate {
+  constructor(title, body) {
+    this.title = title;
+    this.body = body;
+  }
+}
 
+//function for saving note
+saveNoteButton.addEventListener("click", function () {
+  let notesArray = [];
+  const alertDiv = document.getElementById("alert-user");
+  const allNotes = localStorage.getItem("notes");
 
+  console.log(allNotes)
+  if (allNotes === null) {
+    notesArray = [];
+  } else {
+    notesArray = JSON.parse(allNotes);
+  }
+
+  let title = addTitle.value;
+  let body = addText.value;
+  const singleNote = new NoteTemplate(title, body);
+  if (singleNote.title.length < 1 || singleNote.body.length < 1) {
+    alertDiv.innerHTML = `<div class="alert alert-warning"  role="alert">
+        Please enter a title and body texts both...
+      </div>`;
+
+    return;
+  }
+  else {
+    alertDiv.innerHTML = "";
+    notesArray.push(singleNote);
+
+    localStorage.setItem("notes", JSON.stringify(notesArray));
+    document.getElementById("display-notes").innerHTML = "";
+    showNotes();
+    addTitle.value = "";
+    addText.value = "";
+  }
+});
