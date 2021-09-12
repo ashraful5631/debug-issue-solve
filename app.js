@@ -105,8 +105,7 @@ const showNotes = () => {
   noteCount = 0
   notesArray.map((element, index) => {
     noteCount++
-    const newdiv = document.createElement('div')
-    newdiv.innerHTML = `
+    notesDiv.innerHTML += `
 
  <div class="single-card">
       <div
@@ -144,7 +143,6 @@ const showNotes = () => {
       </div>
     </div>
 `;
-    notesDiv.appendChild(newdiv)
   });
 
   document.getElementById("notes-count").innerText = noteCount;
@@ -152,3 +150,61 @@ const showNotes = () => {
 };
 
 showNotes();
+
+//function for make notes editable
+function contentEdit(id) {
+  const content = document.getElementById(id);
+  content.setAttribute("contenteditable", "true");
+}
+
+
+function editTitle(index, id) {
+  const content = document.getElementById(id);
+  editText(index, id, "title");
+  content.removeAttribute("contenteditable");
+}
+
+function editBody(index, id) {
+  const content = document.getElementById(id);
+  editText(index, id, "body");
+  content.removeAttribute("contenteditable");
+}
+
+const editText = (index, id, toEdit) => {
+  const changedText = document.getElementById(id).innerText;
+  let notesArray = JSON.parse(localStorage.getItem("notes"));
+  if (toEdit === "title") {
+    notesArray[index].title = changedText;
+  }
+  if (toEdit === "body") {
+    notesArray[index].body = changedText;
+  }
+  localStorage.setItem("notes", JSON.stringify(notesArray));
+};
+
+document.getElementById("search-btn").addEventListener("click", (e) => {
+  const searchedKey = document.getElementById("searched-keyword").value.toLowerCase();
+  filterNotes(searchedKey);
+  document.getElementById("searched-keyword").value = ""
+  e.preventDefault();
+});
+
+//function for filtering notes on keyword input in search field..
+function inputChange(event) {
+  const searchedKey = event.target.value.toLowerCase();
+  filterNotes(searchedKey);
+}
+
+const filterNotes = (searchedKey) => {
+  const x = document.getElementsByClassName("single-card");
+
+  for (let i = 0; i < x.length; i++) {
+    const element = x[i];
+
+    if (element.innerText.toLowerCase().includes(searchedKey)) {
+      element.style.display = "block";
+    } else {
+      element.style.display = "none";
+    }
+  }
+};
